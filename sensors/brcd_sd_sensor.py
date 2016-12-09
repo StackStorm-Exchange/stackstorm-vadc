@@ -19,7 +19,7 @@ class brcdSdSensor(PollingSensor):
 
     def poll(self):
         try:
-            errors = self._bsd.getErrors()
+            errors = self._bsd.get_errors()
             last_errors = self._get_last_errors()
             self._set_last_errors(errors)
             self._process_changes(errors, last_errors)
