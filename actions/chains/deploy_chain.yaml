@@ -6,8 +6,10 @@
       ref: "vadc.vtm_add_pool"
       parameters:
         vtm: "{{vtm}}"
-        name: "{{service}}_pool"
+        name: "{{service}}"
         nodes: "{{nodes}}"
+        algorithm: least_connections
+        monitors: [ Ping ]
       on-success: "addtip"
       on-failure: "bitch"
     -
@@ -15,7 +17,7 @@
       ref: "vadc.vtm_add_tip"
       parameters:
         vtm: "{{vtm}}"
-        name: "{{service}}_tip"
+        name: "{{service}}"
         vtms: "{{vtms}}"
         addresses: "{{addresses}}"
       on-success: "addvserver"
@@ -25,16 +27,16 @@
       ref: "vadc.vtm_add_vserver"
       parameters:
         vtm: "{{vtm}}"
-        name: "{{service}}_vs"
-        tip: "{{service}}_tip"
-        pool: "{{service}}_pool"
+        name: "{{service}}"
+        tip: "{{service}}"
+        pool: "{{service}}"
       on-failure: "deltip"
     -
       name: "deltip"
       ref: "vadc.vtm_del_tip"
       parameters:
         vtm: "{{vtm}}"
-        name: "{{service}}_tip"
+        name: "{{service}}"
       on-failure: "delpool"
       on-success: "delpool"
     -
@@ -42,7 +44,7 @@
       ref: "vadc.vtm_del_pool"
       parameters:
         vtm: "{{vtm}}"
-        name: "{{service}}_pool"
+        name: "{{service}}"
       on-failure: "bitch"
       on-success: "bitch"
     -
