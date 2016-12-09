@@ -18,16 +18,17 @@ parameters:
     type: array
   algorithm:
     description: "Load Balancing algorithm for the pool"
-    default: 'least_connections'
     type: string
     required: false
   persistence:
     description: "Persistence class for the pool"
-    default: ""
     type: string
     required: false
   monitors:
     description: "Health Monitor for the pool"
-    default: ["Ping"]
     type: array
+    required: false
+  extra:
+    description: "Additional JSON/YAML properties to merge during creation"
+    type: string
     required: false
