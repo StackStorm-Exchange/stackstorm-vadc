@@ -6,6 +6,7 @@ import json
 import yaml
 import time
 from os import path
+from base64 import b64encode, b64decode
 
 
 class Vadc(object):
@@ -45,11 +46,11 @@ class Vadc(object):
         self.client = requests.Session()
         self.client.auth = (self.user, self.passwd)
 
-    def _get_config(self, url, params=None):
+    def _get_config(self, url, headers=None, params=None):
         self._debug("URL: " + url)
         try:
             self._init_http()
-            response = self.client.get(url, verify=False, params=params)
+            response = self.client.get(url, verify=False, headers=headers, params=params)
         except:
             self.logger.error("Error: Unable to connect to API")
             raise Exception("Error: Unable to connect to API")
@@ -699,6 +700,18 @@ class Vtm(Vadc):
         if res.status_code != 204:
             raise Exception("Failed to delete Backup." +
                 " Result: {}, {}".format(res.status_code, res.text))
+
+    def get_backup(self, name, b64=True):
+        if self.version < 3.9:
+            raise Exception("Backups require vTM 11.0 or newer")
+        url = self.statusUrl + "/backups/full/" + name
+        headers = {"Accept": "application/x-tar"}
+        res = self._get_config(url, headers=headers)
+        if res.status_code != 200:
+            raise Exception("Failed to download Backup." +
+                " Result: {}, {}".format(res.status_code, res.text))
+        backup = b64encode(res.content) if b64 else res.content
+        return backup
 
     def upload_action_program(self, name, filename):
         url = self.configUrl + "/action_programs/" + name
