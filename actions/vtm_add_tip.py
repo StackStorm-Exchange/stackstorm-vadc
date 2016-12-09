@@ -6,7 +6,7 @@ from lib.vadc import Vtm
 
 class VtmAddTip(Action):
 
-    def run(self, vtm, name, vtms, addresses):
+    def run(self, vtm, name, vtms, addresses, extra):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.addTip(name, vtms, addresses)
+        vtm.add_tip(name, vtms, addresses, extra)
