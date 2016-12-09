@@ -9,4 +9,5 @@ class VtmDelPersistence(Action):
     def run(self, vtm, name):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.delSessionPersistence(name)
+        vtm.del_session_persistence(name)
+        return (True, None)

@@ -9,4 +9,5 @@ class VtmDelVserver(Action):
     def run(self, vtm, name):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.delVserver(name)
+        vtm.del_vserver(name)
+        return (True, None)

@@ -9,4 +9,5 @@ class VtmDelServerCert(Action):
     def run(self, vtm, name):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.delServerCert(name)
+        vtm.del_server_cert(name)
+        return (True, None)
