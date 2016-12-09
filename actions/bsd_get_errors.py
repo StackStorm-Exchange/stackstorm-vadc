@@ -8,5 +8,5 @@ class BsdGetErrors(Action):
 
     def run(self, stringify):
         bsd = Bsd(self.config, self.logger)
-        result = bsd.getErrors(stringify)
-        return result
+        result = bsd.get_errors(stringify)
+        return (True, result)

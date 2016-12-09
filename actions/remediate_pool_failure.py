@@ -17,19 +17,19 @@ class RemediatePoolFailure(Action):
         instance = errors["name"]
         vtm = Vtm(self.config, self.logger, instance)
         bsd = Bsd(self.config, self.logger)
-        status = bsd.getStatus(instance)[0]
+        status = bsd.get_status(instance)[0]
 
         nodes = errors["traffic_health"]["failed_nodes"]
         failedPools = {pool: [node["node"] for node in nodes for pool in node["pools"]]
             for node in nodes for pool in node["pools"]}
 
         for pool in failedPools.keys():
-            nodes = vtm.getPoolNodes(pool)
+            nodes = vtm.get_pool_nodes(pool)
             if set(nodes["active"]).issubset(failedPools[pool]):
                 self.logger.debug("Pool Dead")
                 for vs in status["traffic_health"]["virtual_servers"]:
                     if vs["pool"] == pool:
                         self.logger.debug("Putting VS: {} into maintenance.".format(vs["name"]))
-                        vtm.enableMaintenance(vs["name"], "maintenance")
+                        vtm.enable_maintenance(vs["name"], "maintenance")
             else:
                 self.logger.debug("Pool not dead")

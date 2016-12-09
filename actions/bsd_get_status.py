@@ -9,5 +9,5 @@ class BsdGetStatus(Action):
     def run(self, vtm, stringify):
 
         bsd = Bsd(self.config, self.logger)
-        result = bsd.getStatus(vtm, stringify)
-        return result
+        result = bsd.get_status(vtm, stringify)
+        return (True, result)

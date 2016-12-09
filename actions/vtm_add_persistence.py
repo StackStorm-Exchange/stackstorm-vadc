@@ -9,4 +9,4 @@ class VtmAddPersistence(Action):
     def run(self, vtm, name, method, cookie):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.addSessionPersistence(name, method, cookie)
+        vtm.add_session_persistence(name, method, cookie)
