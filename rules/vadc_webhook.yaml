@@ -1,0 +1,15 @@
+---
+name: "webhook"
+pack: "vadc"
+description: "Example vADC Web Hook Rule."
+enabled: false
+
+trigger:
+        type: "core.st2.webhook"
+        parameters:
+            url: "vadc_hook"
+
+action:
+    ref: "core.local"
+    parameters:
+        cmd: "logger {{trigger.body}}"
