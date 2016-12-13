@@ -17,7 +17,7 @@ class VtmAddBackup(Action):
             backup = fh.read()
             fh.close()
         else:
-            sys.stderr.write("File does not exist: {}\n".format(outfile))
+            sys.stderr.write("File does not exist: {}\n".format(tarball))
             return (False, None)
 
         result = vtm.upload_backup(backup)

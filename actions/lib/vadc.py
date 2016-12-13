@@ -14,7 +14,7 @@ class Vadc(object):
 
     def __init__(self, host, user, passwd, logger):
         requests.packages.urllib3.disable_warnings()
-        if host.endswith('/') == False:
+        if host.endswith('/') is False:
             host += "/"
         self.host = host
         self.user = user
@@ -34,8 +34,8 @@ class Vadc(object):
             raise Exception("Failed to locate API: {}, {}".format(res.status_code, res.text))
         versions = res.json()
         versions = versions["children"]
-        major=max([int(ver["name"].split('.')[0]) for ver in versions])
-        minor=max([int(ver["name"].split('.')[1]) for ver in versions if 
+        major = max([int(ver["name"].split('.')[0]) for ver in versions])
+        minor = max([int(ver["name"].split('.')[1]) for ver in versions if
             ver["name"].startswith(str(major))])
         version = "{}.{}".format(major, minor)
         self._debug("API Version: {}".format(version))
@@ -57,7 +57,8 @@ class Vadc(object):
         self._debug("Body: " + response.text)
         return response
 
-    def _push_config(self, url, config, method="PUT", ct="application/json", params=None, extra=None):
+    def _push_config(self, url, config, method="PUT", ct="application/json",
+            params=None, extra=None):
         self._debug("URL: " + url)
         try:
             self._init_http()
@@ -67,7 +68,7 @@ class Vadc(object):
                         if extra.startswith("{"):
                             extra = json.loads(extra, encoding="utf-8")
                         else:
-                            extra = yaml.load( extra )
+                            extra = yaml.load(extra)
                         self._merge_extra(config, extra)
                     except Exception as e:
                         self.logger.warn("Failed to merge extra properties: {}".format(e))
@@ -275,22 +276,6 @@ class Bsd(Vadc):
             return json.dumps(output, encoding="utf-8")
         else:
             return output
-
-    def _submit_backup_task(self, vtm=None, cluster_id=None, tag=None):
-        if self.version < 2.3:
-            raise Exception("You need to be running BSD version 2.5 or newer to perform a backup")
-        url = self.baseUrl + "/config/backup/task"
-        if cluster_id is None:
-            if vtm is None:
-                raise Exception("You need to provide with a vTM or Cluster-ID")
-            cluster_id = self._get_cluster_for_vtm(cluster)
-        config = { "cluster_id": cluster_id, "task_type": "backup restore",
-            "task_subtype": "backup now" }
-        res = self._push_config(url, config, "POST")
-        if res.status_code != 201:
-            raise Exception("Failed to create BackUp, Response: {}, {}".format(
-                res.status_code, res.text))
-        return res.json()
 
     def get_status(self, vtm=None, stringify=False):
         instances = self._cache_lookup("get_status")
@@ -500,15 +485,15 @@ class Vtm(Vadc):
         url = self.configUrl + "/pools/" + name
         nodeTable = []
         if active is not None and active:
-            nodeTable.extend( [{"node": node, "state": "active"} for node in active] )
+            nodeTable.extend([{"node": node, "state": "active"} for node in active])
         if draining is not None and draining:
-            nodeTable.extend( [{"node": node, "state": "draining"} for node in draining] )
+            nodeTable.extend([{"node": node, "state": "draining"} for node in draining])
         if disabled is not None and disabled:
-            nodeTable.extend( [{"node": node, "state": "disabled"} for node in disabled] )
-        config = {"properties": {"basic": {"nodes_table": nodeTable }}}
+            nodeTable.extend([{"node": node, "state": "disabled"} for node in disabled])
+        config = {"properties": {"basic": {"nodes_table": nodeTable}}}
         res = self._push_config(url, config)
         if res.status_code != 201 and res.status_code != 200:
-            raise Exception("Failed to set pool nodes. Result: {}, {}".format(res.status_code, res.text))
+            raise Exception("Failed to set nodes. Result: {}, {}".format(res.status_code, res.text))
 
     def drain_nodes(self, name, nodes, drain=True):
         url = self.configUrl + "/pools/" + name
@@ -652,7 +637,7 @@ class Vtm(Vadc):
     def list_backups(self):
         if self.version < 3.9:
             raise Exception("Backups require vTM 11.0 or newer")
-        url = self.statusUrl + "/backups/full" 
+        url = self.statusUrl + "/backups/full"
         res = self._get_config(url)
         if res.status_code != 200:
             raise Exception("Failed to get Backup Listing." +
@@ -671,8 +656,8 @@ class Vtm(Vadc):
         if self.version < 3.9:
             raise Exception("Backups require vTM 11.0 or newer")
         url = self.statusUrl + "/backups/full/" + name
-        description="" if description is None else description
-        config = {"properties": {"backup": {"description": description }}}
+        description = "" if description is None else description
+        config = {"properties": {"backup": {"description": description}}}
         res = self._push_config(url, config)
         if res.status_code != 201 and res.status_code != 200:
             raise Exception("Failed to create Backup." +
@@ -683,7 +668,7 @@ class Vtm(Vadc):
             raise Exception("Backup restoration requires BSD Version 2.6 when proxying.")
         if self.version < 3.9:
             raise Exception("Backups require vTM 11.0 or newer")
-        url = self.statusUrl + "/backups/full/" + name +"?restore"
+        url = self.statusUrl + "/backups/full/" + name + "?restore"
         config = {"properties": {}}
         res = self._push_config(url, config)
         if res.status_code != 200:
@@ -729,7 +714,8 @@ class Vtm(Vadc):
                 " Result: {}, {}".format(res.status_code, res.text))
 
     def add_action_program(self, name, program, arguments):
-        config = {"properties": {"basic": {"type": "program"}, "program": {"arguments": arguments, "program": program}}}
+        config = {"properties": {"basic": {"type": "program"}, "program":
+            {"arguments": arguments, "program": program}}}
         url = self.configUrl + "/actions/" + name
         res = self._push_config(url, config)
         if res.status_code != 200 and res.status_code != 201:
@@ -760,4 +746,3 @@ class Vtm(Vadc):
             raise Exception("Failed to Set Action: {}".format(action) +
                 " for Event: {}.".format(event) +
                 " Result: {}, {}".format(res.status_code, res.text))
-
