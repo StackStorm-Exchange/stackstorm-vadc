@@ -6,7 +6,6 @@ import json
 import yaml
 import time
 from os import path
-from base64 import b64encode, b64decode
 
 
 class Vadc(object):
@@ -701,7 +700,7 @@ class Vtm(Vadc):
             raise Exception("Failed to delete Backup." +
                 " Result: {}, {}".format(res.status_code, res.text))
 
-    def get_backup(self, name, b64=True):
+    def get_backup(self, name):
         if self.version < 3.9:
             raise Exception("Backups require vTM 11.0 or newer")
         url = self.statusUrl + "/backups/full/" + name
@@ -710,8 +709,17 @@ class Vtm(Vadc):
         if res.status_code != 200:
             raise Exception("Failed to download Backup." +
                 " Result: {}, {}".format(res.status_code, res.text))
-        backup = b64encode(res.content) if b64 else res.content
+        backup = res.content
         return backup
+
+    def upload_backup(self, backup):
+        if self.version < 3.9:
+            raise Exception("Backups require vTM 11.0 or newer")
+        url = self.statusUrl + "/backups/full/"
+        res = self._push_config(url, backup, method="POST", ct="application/x-tar")
+        if res.status_code != 201 and res.status_code != 204:
+            raise Exception("Failed to upload Backup." +
+                " Result: {}, {}".format(res.status_code, res.text))
 
     def upload_action_program(self, name, filename):
         url = self.configUrl + "/action_programs/" + name
