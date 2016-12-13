@@ -11,7 +11,7 @@ class VtmAddBackup(Action):
     def run(self, vtm, tarball):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        
+
         if path.exists(tarball) is True:
             fh = open(tarball, "rb")
             backup = fh.read()

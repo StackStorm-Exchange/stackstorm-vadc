@@ -11,7 +11,7 @@ class VtmGetBackup(Action):
     def run(self, vtm, name, outdir):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        
+
         if path.isdir(outdir) is True:
             outfile = "{}/backup_{}_{}.tar".format(outdir, vtm.vtm, name)
             if path.exists(outfile) is False:
