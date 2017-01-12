@@ -4,10 +4,10 @@ from st2actions.runners.pythonrunner import Action
 from lib.vadc import Vtm
 
 
-class VtmEnableSslOffload(Action):
+class VtmSetPoolNodes(Action):
 
-    def run(self, vtm, name, cert, xproto, headers):
+    def run(self, vtm, pool, active, draining, disabled):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.enable_ssl_offload(name, cert, True, xproto, headers)
+        vtm.set_pool_nodes(pool, active, draining, disabled)
         return (True, None)

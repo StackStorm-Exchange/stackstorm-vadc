@@ -20,3 +20,7 @@ parameters:
     description: "The IP Addresses in the TIP Group"
     required: true
     type: array
+  extra:
+    description: "Additional JSON/YAML properties to merge during creation"
+    type: string
+    required: false

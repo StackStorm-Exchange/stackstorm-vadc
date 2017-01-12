@@ -9,4 +9,5 @@ class VtmEnableSslEncryption(Action):
     def run(self, vtm, name, verify):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.enableSSLEncryption(name, True, verify)
+        vtm.enable_ssl_encryption(name, True, verify)
+        return (True, None)

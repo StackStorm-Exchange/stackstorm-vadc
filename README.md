@@ -219,6 +219,27 @@ _Operations_
     You must provide the vtm, name, and a list of nodes. By default we
     drain nodes, but you can pass drain=false to undrain them.
 
+  * vtm\_set\_pool\_nodes
+    Set nodes in pool by providing lists of active, draining, and
+    disabled nodes.
+
+  * vtm\_enable\_ssl\_offload
+    Enable SSL Offload on a VTM Virtual Server. You must provide the 
+    vserver, and certificate name, and optionally whether to inject the
+    X-Forwarded-Protocol, and additional SSL Headers.
+    There is also a _disable_ action.
+
+  * vtm\_enable\_ssl\_encryption
+    Enable SSL Encryption on a pool. You must provide the name of the pool.
+    If you want vTM to verify the certificate chain of the server, then set
+    verify to true.
+    There is also a _disable_ action.
+
+  * vtm\_add\_webhook\_action
+    Uploads the webhook action script to the vTM. You must provide the st2
+    API Key, and WebHook URI for the action to call. The action can be 
+    associated with an existing event on the vTM, if you provide its name.
+
   * vtm\_get\_pool\_nodes  
     Retrieve a list of nodes from the given pool. You must provide the
     vtm and the name of the pool.
@@ -227,6 +248,29 @@ _Operations_
     Enabled or disable a Maintenance mode TrafficScript rule.  
     You must provide the vtm and vserver name, default is to enable the
     maintenance rule, and the default rule name is maintenance.
+
+_Backups_
+
+  * vtm\_list\_backups
+    Get a list of Backups from the provided vTM
+
+  * vtm\_create\_backup
+    Create a new BackUp on the vTM.
+
+  * vtm\_delete\_backup
+    Remove a backup from the vTM.
+
+  * vtm\_add\_backup
+    Upload a Backup to the vTM ready for restoration. You must provide the
+    filename in the `tarball` parameter.
+
+  * vtm\_get\_backup
+    Download a backup from the vTM. This will be downloaded to the local
+    file system in `outdir`. The name of the file will be returned in the
+    result.
+
+  * vtm\_restore\_backup
+    Restore a backup to the vTM.
 
 _Chains and workflows_
 

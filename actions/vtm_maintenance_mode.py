@@ -9,4 +9,5 @@ class VtmMaintenanceMode(Action):
     def run(self, vtm, vserver, rule, enable):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.enableMaintenance(vserver, rule, enable)
+        vtm.enable_maintenance(vserver, rule, enable)
+        return (True, None)

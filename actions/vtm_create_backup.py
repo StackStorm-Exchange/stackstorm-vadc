@@ -4,9 +4,10 @@ from st2actions.runners.pythonrunner import Action
 from lib.vadc import Vtm
 
 
-class VtmAddTip(Action):
+class VtmCreateBackup(Action):
 
-    def run(self, vtm, name, vtms, addresses, extra):
+    def run(self, vtm, name, description):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.add_tip(name, vtms, addresses, extra)
+        vtm.create_backup(name, description)
+        return (True, None)

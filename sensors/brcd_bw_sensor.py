@@ -26,7 +26,7 @@ class brcdBwSensor(PollingSensor):
 
     def poll(self):
         self._get_configs()
-        bandwidth = self._bsd.getBandwidth()
+        bandwidth = self._bsd.get_bandwidth()
         bw_tracker = self._get_bw_tracker()
         if self._manage is not None:
             self._manage_bandwidth(bw_tracker, bandwidth)
@@ -75,6 +75,9 @@ class brcdBwSensor(PollingSensor):
             else:
                 if instance in bw_tracker:
                     bw_tracker.pop(instance)
+        for instance in bw_tracker.keys():
+            if instance not in bandwidth:
+                bw_tracker.pop(instance)
 
     def _issue_update(self, instance, tracked, instData, bw_tracker, bandwidth):
             average = sum(bw_tracker[instance]["tracking"]) / len(bw_tracker[instance]["tracking"])

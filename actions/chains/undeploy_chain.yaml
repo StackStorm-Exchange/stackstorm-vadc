@@ -6,7 +6,7 @@
       ref: "vadc.vtm_del_vserver"
       parameters:
         vtm: "{{vtm}}"
-        name: "{{service}}_vs"
+        name: "{{service}}"
       on-success: "deltip"
       on-failure: "bitch"
     -
@@ -14,7 +14,7 @@
       ref: "vadc.vtm_del_tip"
       parameters:
         vtm: "{{vtm}}"
-        name: "{{service}}_tip"
+        name: "{{service}}"
       on-success: "delpool"
       on-failure: "bitch"
     -
@@ -22,7 +22,7 @@
       ref: "vadc.vtm_del_pool"
       parameters:
         vtm: "{{vtm}}"
-        name: "{{service}}_pool"
+        name: "{{service}}"
       on-failure: "bitch"
     -
       name: "bitch"

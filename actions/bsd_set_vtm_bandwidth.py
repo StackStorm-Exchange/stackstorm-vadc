@@ -9,4 +9,4 @@ class BsdSetVtmBandwidth(Action):
     def run(self, vtm, bw):
 
         bsd = Bsd(self.config, self.logger)
-        bsd.setBandwidth(vtm, bw)
+        bsd.set_bandwidth(vtm, bw)

@@ -1,18 +1,67 @@
 ---
+brcd_sd_proxy:
+    description: "Configure vTMs via a Brocade Services Director? Set to False if you want to connect directly"
+    type: boolean
+    default: true
+    required: true
 brcd_sd_host:
-  description: "Service Director API EndPoint (eg https://sd1:8100/)"
-  type: string
-  default: "{{user.brcd_sd_host}}"
-  required: true
+    description: "Service Director API EndPoint (eg https://sd1:8100/). Required if brcd_sd_proxy is true"
+    type: string
+    default: "{{system.brcd_sd_host}}"
+    required: false
 brcd_sd_user:
-  description: "Service Director REST User"
-  default: "{{user.brcd_sd_user}}"
-  type: string
-  required: true
+    description: "Service Director REST User. Required if brcd_sd_proxy is true"
+    default: "{{system.brcd_sd_user}}"
+    type: string
+    required: false
 brcd_sd_pass:
-  description: "Service Director REST Password"
-  type: string
-  default: "{{user.brcd_sd_pass}}"
-  secret: true
-  required: true
-
+    description: "Service Director REST Password. Required if brcd_sd_proxy is true"
+    type: string
+    default: "{{system.brcd_sd_pass}}"
+    secret: true
+    required: false
+brcd_vtm_host:
+    description: "vTM API EndPoint (eg https://vtm01:9070/). Required if brcd_sd_proxy is false"
+    type: string
+    default: "{{user.brcd_vtm_host}}"
+    required: false
+brcd_vtm_user:
+    description: "vTM REST User. Required if brcd_sd_proxy is false"
+    default: "{{user.brcd_vtm_user}}"
+    type: string
+    required: false
+brcd_vtm_pass:
+    description: "vTM REST Password. Required if brcd_sd_proxy is false"
+    type: string
+    default: "{{user.brcd_vtm_pass}}"
+    secret: true
+    required: false
+brcd_bw_manage:
+    description: "Brocade Bandwidth Sensor: Set to 'all' or a list of vTMs which should have their bandwdith automatically assigned."
+    type: string
+    required: false
+brcd_bw_track:
+    description: "Brocade Bandwidth Sensor: How many sensor measurements to track?"
+    default: "10"
+    type: string
+    required: false
+brcd_bw_minimum:
+    description: "Brocade Bandwidth Sensor: The minimum amount of bandwidth to assign to a vTM"
+    default: "10"
+    type: string
+    required: false
+brcd_bw_headroom:
+    description: "Brocade Bandwidth Sensor: How much bandwidth headroom should a vTM maintain?"
+    default: "10"
+    type: string
+    required: false
+brcd_bw_roundup:
+    description: "Brocade Bandwidth Sensor: Roundup bw to nearest n Mb"
+    default: "10"
+    type: string
+    required: false
+brcd_bw_warn:
+    description: "Brocade Bandwidth Sensor: Warning threshold for non-managed vTMs"
+    default: "10"
+    type: string
+    required: false

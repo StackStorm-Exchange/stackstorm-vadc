@@ -9,5 +9,5 @@ class BsdListVtms(Action):
     def run(self, full, deleted, stringify):
 
         bsd = Bsd(self.config, self.logger)
-        result = bsd.listVtms(full, deleted, stringify)
-        return result
+        result = bsd.list_vtms(full, deleted, stringify)
+        return (True, result)

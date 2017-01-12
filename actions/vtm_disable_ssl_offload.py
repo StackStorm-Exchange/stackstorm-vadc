@@ -9,4 +9,5 @@ class VtmDisableSslOffload(Action):
     def run(self, vtm, name, xproto, headers):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.enableSSLOffload(name, "", False, xproto, headers)
+        vtm.enable_ssl_offload(name, "", False, xproto, headers)
+        return (True, None)

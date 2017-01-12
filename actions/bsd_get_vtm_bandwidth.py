@@ -9,5 +9,5 @@ class BsdGetVtmBandwidth(Action):
     def run(self, vtm, stringify):
 
         bsd = Bsd(self.config, self.logger)
-        result = bsd.getBandwidth(vtm, stringify)
-        return result
+        result = bsd.get_bandwidth(vtm, stringify)
+        return (True, result)

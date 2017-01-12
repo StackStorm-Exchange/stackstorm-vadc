@@ -1,0 +1,14 @@
+description: 'Service Director - Find an Active vTM in a Cluster/List'
+enabled: true
+entry_point: bsd_get_active_vtm.py
+name: bsd_get_active_vtm
+runner_type: "python-script"
+parameters:
+  vtms:
+    description: "List of vTMs to Check"
+    type: array
+    required: false
+  cluster:
+    description: "The Cluster ID/Tag. Cluster trumps vtms list if you provide both."
+    type: string
+    required: false

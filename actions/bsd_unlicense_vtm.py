@@ -9,5 +9,5 @@ class BsdUnlicenseVtm(Action):
     def run(self, vtm):
 
         bsd = Bsd(self.config, self.logger)
-        result = bsd.delVtm(vtm)
-        return result
+        result = bsd.del_vtm(vtm)
+        return (True, result)

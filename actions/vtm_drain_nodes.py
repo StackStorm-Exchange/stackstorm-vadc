@@ -9,4 +9,5 @@ class VtmDrainNodes(Action):
     def run(self, vtm, pool, nodes, drain):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.drainNodes(pool, nodes, drain)
+        vtm.drain_nodes(pool, nodes, drain)
+        return (True, None)

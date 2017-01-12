@@ -1,0 +1,26 @@
+description: 'vTM - Set Nodes in a Pool'
+enabled: true
+entry_point: vtm_set_pool_nodes.py
+name: vtm_set_pool_nodes
+runner_type: "python-script"
+parameters:
+  vtm:
+    description: "The vTM instance to configure"
+    type: string
+    required: true
+  pool:
+    description: "The name of the pool"
+    type: string
+    required: true
+  active:
+    description: "The list of ACTIVE nodes"
+    type: array
+    required: false
+  draining:
+    description: "The list of DRAINING nodes"
+    type: array
+    required: false
+  disabled:
+    description: "The list of DISABLED nodes"
+    type: array
+    required: false

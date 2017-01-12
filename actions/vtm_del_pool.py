@@ -9,4 +9,5 @@ class VtmDelPool(Action):
     def run(self, vtm, name):
 
         vtm = Vtm(self.config, self.logger, vtm)
-        vtm.delPool(name)
+        vtm.del_pool(name)
+        return (True, None)
