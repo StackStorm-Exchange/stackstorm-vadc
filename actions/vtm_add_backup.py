@@ -1,9 +1,9 @@
 #! /usr/bin/python
 
+import sys
+from os import path
 from st2common.runners.base_action import Action
 from lib.vadc import Vtm
-from os import path
-import sys
 
 
 class VtmAddBackup(Action):

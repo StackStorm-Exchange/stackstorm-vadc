@@ -21,7 +21,7 @@ class RemediatePoolFailure(Action):
 
         nodes = errors["traffic_health"]["failed_nodes"]
         failedPools = {pool: [node["node"] for node in nodes for pool in node["pools"]]
-            for node in nodes for pool in node["pools"]}
+                       for node in nodes for pool in node["pools"]}
 
         for pool in failedPools.keys():
             nodes = vtm.get_pool_nodes(pool)

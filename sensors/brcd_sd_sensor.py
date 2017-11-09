@@ -1,14 +1,13 @@
+import json
 from st2reactor.sensor.base import PollingSensor
 from lib.vadc import Bsd
-
-import json
 
 
 class brcdSdSensor(PollingSensor):
 
     def __init__(self, sensor_service, config=None, poll_interval=5):
         super(brcdSdSensor, self).__init__(sensor_service=sensor_service, config=config,
-            poll_interval=poll_interval)
+                                           poll_interval=poll_interval)
         self._logger = self.sensor_service.get_logger(name=self.__class__.__name__)
         self._stop = False
         self._bsd = None
@@ -41,7 +40,7 @@ class brcdSdSensor(PollingSensor):
                 if errors[instance] != last_errors[instance]:
                     # This has changed
                     payload = {"status": "updated", "error_level": error_level, "errors":
-                        json.dumps(errors[instance], encoding="utf-8")}
+                               json.dumps(errors[instance], encoding="utf-8")}
                     self.sensor_service.dispatch(trigger="vadc.bsd_failure_event", payload=payload)
                 else:
                     # No change
@@ -49,13 +48,13 @@ class brcdSdSensor(PollingSensor):
             else:
                 # New error
                 payload = {"status": "new", "error_level": error_level, "errors":
-                    json.dumps(errors[instance], encoding="utf-8")}
+                           json.dumps(errors[instance], encoding="utf-8")}
                 self.sensor_service.dispatch(trigger="vadc.bsd_failure_event", payload=payload)
         for instance in last_errors:
             if instance not in errors:
                 # Recovered
                 payload = {"status": "resolved", "error_level": "ok", "errors":
-                    json.dumps(last_errors[instance], encoding="utf-8")}
+                           json.dumps(last_errors[instance], encoding="utf-8")}
                 self.sensor_service.dispatch(trigger="vadc.bsd_failure_event", payload=payload)
 
     def _get_last_errors(self):
@@ -71,8 +70,8 @@ class brcdSdSensor(PollingSensor):
         self._last_errors = last_errors
 
         if hasattr(self._sensor_service, 'set_value'):
-            self._sensor_service.set_value(name='last_errors', value=json.dumps(last_errors,
-                encoding="utf-8"))
+            self._sensor_service.set_value(name='last_errors',
+                                           value=json.dumps(last_errors, encoding="utf-8"))
 
     def cleanup(self):
         # This is called when the st2 system goes down. You can perform cleanup operations like
