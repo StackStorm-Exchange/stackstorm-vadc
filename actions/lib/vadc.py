@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-import requests
 import sys
 import json
-import yaml
 import time
 from os import path
+import yaml
+import requests
 
 
 class Vadc(object):
@@ -13,7 +13,7 @@ class Vadc(object):
     DEBUG = False
 
     def __init__(self, host, user, passwd, logger):
-        requests.packages.urllib3.disable_warnings()
+        requests.packages.urllib3.disable_warnings()  # pylint: disable=no-member
         if host.endswith('/') is False:
             host += "/"
         self.host = host
@@ -36,7 +36,7 @@ class Vadc(object):
         versions = versions["children"]
         major = max([int(ver["name"].split('.')[0]) for ver in versions])
         minor = max([int(ver["name"].split('.')[1]) for ver in versions if
-            ver["name"].startswith(str(major))])
+                     ver["name"].startswith(str(major))])
         version = "{}.{}".format(major, minor)
         self._debug("API Version: {}".format(version))
         return version
@@ -58,7 +58,7 @@ class Vadc(object):
         return response
 
     def _push_config(self, url, config, method="PUT", ct="application/json",
-            params=None, extra=None):
+                     params=None, extra=None):
         self._debug("URL: " + url)
         try:
             self._init_http()
@@ -75,10 +75,10 @@ class Vadc(object):
                 config = json.dumps(config)
             if method == "PUT":
                 response = self.client.put(url, verify=False, data=config,
-                    headers={"Content-Type": ct}, params=params)
+                                           headers={"Content-Type": ct}, params=params)
             else:
                 response = self.client.post(url, verify=False, data=config,
-                    headers={"Content-Type": ct}, params=params)
+                                            headers={"Content-Type": ct}, params=params)
         except requests.exceptions.ConnectionError:
             self.logger.error("Error: Unable to connect to API")
             raise Exception("Error: Unable to connect to API")
@@ -169,10 +169,10 @@ class Bsd(Vadc):
         licenses = res.json()
         licenses = licenses["children"]
         universal = [int(lic["name"][11:]) for lic in licenses
-            if lic["name"].startswith("universal_v")]
+                     if lic["name"].startswith("universal_v")]
         universal.sort(reverse=True)
         legacy = [float(lic["name"][7:]) for lic in licenses
-            if lic["name"].startswith("legacy_")]
+                  if lic["name"].startswith("legacy_")]
         legacy.sort(reverse=True)
         order = []
         order += (["universal_v" + str(ver) for ver in universal])
@@ -206,8 +206,8 @@ class Bsd(Vadc):
             address = vtm
 
         config = {"bandwidth": bw, "tag": vtm, "owner": "stanley", "stm_feature_pack": fp,
-            "rest_address": address + ":9070", "admin_username": "admin", "rest_enabled": False,
-            "host_name": address, "management_address": address}
+                  "rest_address": address + ":9070", "admin_username": "admin",
+                  "rest_enabled": False, "host_name": address, "management_address": address}
 
         if password is not None:
             config["admin_password"] = password
@@ -268,7 +268,7 @@ class Bsd(Vadc):
                 output.append(config)
             else:
                 out_dict = {k: config[k] for k in ("host_name", "tag", "status",
-                    "stm_feature_pack", "bandwidth")}
+                                                   "stm_feature_pack", "bandwidth")}
                 out_dict["name"] = instance["name"]
                 output.append(out_dict)
 
@@ -363,7 +363,7 @@ class Bsd(Vadc):
             else:
                 peak = 0.0
             bandwidth[instance["name"]] = {"tag": tag, "current": current,
-                "assigned": assigned, "peak": peak}
+                                           "assigned": assigned, "peak": peak}
 
         if stringify:
             return json.dumps(bandwidth, encoding="utf-8")
@@ -397,7 +397,7 @@ class Vtm(Vadc):
                 passwd = config['brcd_vtm_pass']
         except KeyError:
             raise ValueError("You must set key brcd_sd_proxy, and either " +
-                "brcd_sd_[host|user|pass] or brcd_vtm_[host|user|pass].")
+                             "brcd_sd_[host|user|pass] or brcd_vtm_[host|user|pass].")
 
         self.vtm = vtm
         self.bsdVersion = None
@@ -442,7 +442,7 @@ class Vtm(Vadc):
     def _get_vs_rules(self, name):
         config = self._get_vs_config(name)
         rules = {k: config["properties"]["basic"][k] for k in
-                ("request_rules", "response_rules", "completionrules")}
+                 ("request_rules", "response_rules", "completionrules")}
         return rules
 
     def _set_vs_rules(self, name, rules):
@@ -541,7 +541,8 @@ class Vtm(Vadc):
     def add_vserver(self, name, pool, tip, port, protocol, extra=None):
         url = self.configUrl + "/virtual_servers/" + name
         config = {"properties": {"basic": {"pool": pool, "port": port, "protocol": protocol,
-            "listen_on_any": False, "listen_on_traffic_ips": [tip], "enabled": True}}}
+                                           "listen_on_any": False, "listen_on_traffic_ips": [tip],
+                                           "enabled": True}}}
 
         res = self._push_config(url, config, extra=extra)
         if res.status_code != 201 and res.status_code != 200:
@@ -557,7 +558,7 @@ class Vtm(Vadc):
         url = self.configUrl + "/traffic_ip_groups/" + name
 
         config = {"properties": {"basic": {"ipaddresses": addresses,
-            "machines": vtms, "enabled": True}}}
+                                           "machines": vtms, "enabled": True}}}
 
         res = self._push_config(url, config, extra=extra)
         if res.status_code != 201 and res.status_code != 200:
@@ -580,24 +581,24 @@ class Vtm(Vadc):
         res = self._push_config(url, config)
         if res.status_code != 201 and res.status_code != 200:
             raise Exception("Failed to add Server Certificate." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def del_server_cert(self, name):
         url = self.configUrl + "/ssl/server_keys/" + name
         res = self._del_config(url)
         if res.status_code != 204:
             raise Exception("Failed to delete Server Certificate." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def enable_ssl_offload(self, name, cert="", on=True, xproto=False, headers=False):
         url = self.configUrl + "/virtual_servers/" + name
         config = {"properties": {"basic": {"ssl_decrypt": on, "add_x_forwarded_proto": xproto},
-            "ssl": {"add_http_headers": headers, "server_cert_default": cert}}}
+                                 "ssl": {"add_http_headers": headers, "server_cert_default": cert}}}
 
         res = self._push_config(url, config)
         if res.status_code != 200:
             raise Exception("Failed to configure SSl Offload on {}.".format(name) +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def enable_ssl_encryption(self, name, on=True, verify=False):
         url = self.configUrl + "/pools/" + name
@@ -606,13 +607,13 @@ class Vtm(Vadc):
         res = self._push_config(url, config)
         if res.status_code != 200:
             raise Exception("Failed to configure SSl Encryption on {}.".format(name) +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def add_session_persistence(self, name, method, cookie=None):
         types = ["ip", "universal", "named", "transparent", "cookie", "j2ee", "asp", "ssl"]
         if method not in types:
             raise Exception("Failed to add SP Class. Invalid method: {}".format(method) +
-                "Must be one of: {}".format(types))
+                            "Must be one of: {}".format(types))
         if method == "cookie" and cookie is None:
             raise Exception("Failed to add SP Class. You must provide a cookie name.")
 
@@ -625,14 +626,14 @@ class Vtm(Vadc):
         res = self._push_config(url, config)
         if res.status_code != 201 and res.status_code != 200:
             raise Exception("Failed to add Session Persistence Class" +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def del_session_persistence(self, name):
         url = self.configUrl + "/persistence/" + name
         res = self._del_config(url)
         if res.status_code != 204:
             raise Exception("Failed to delete Session Persistence Class." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def list_backups(self):
         if self.version < 3.9:
@@ -641,7 +642,7 @@ class Vtm(Vadc):
         res = self._get_config(url)
         if res.status_code != 200:
             raise Exception("Failed to get Backup Listing." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
         listing = res.json()["children"]
         output = {}
         for backup in [backup["name"] for backup in listing]:
@@ -661,7 +662,7 @@ class Vtm(Vadc):
         res = self._push_config(url, config)
         if res.status_code != 201 and res.status_code != 200:
             raise Exception("Failed to create Backup." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def restore_backup(self, name):
         if self._proxy and self.bsdVersion < 2.4:
@@ -673,7 +674,7 @@ class Vtm(Vadc):
         res = self._push_config(url, config)
         if res.status_code != 200:
             raise Exception("Failed to create Backup." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
         return res.json()
 
     def delete_backup(self, name):
@@ -683,7 +684,7 @@ class Vtm(Vadc):
         res = self._del_config(url)
         if res.status_code != 204:
             raise Exception("Failed to delete Backup." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def get_backup(self, name):
         if self.version < 3.9:
@@ -693,7 +694,7 @@ class Vtm(Vadc):
         res = self._get_config(url, headers=headers)
         if res.status_code != 200:
             raise Exception("Failed to download Backup." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
         backup = res.content
         return backup
 
@@ -704,23 +705,23 @@ class Vtm(Vadc):
         res = self._push_config(url, backup, method="POST", ct="application/x-tar")
         if res.status_code != 201 and res.status_code != 204:
             raise Exception("Failed to upload Backup." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            "Result: {}, {}".format(res.status_code, res.text))
 
     def upload_action_program(self, name, filename):
         url = self.configUrl + "/action_programs/" + name
         res = self._upload_raw_binary(url, filename)
         if res.status_code != 201 and res.status_code != 204:
             raise Exception("Failed to upload program." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def add_action_program(self, name, program, arguments):
         config = {"properties": {"basic": {"type": "program"}, "program":
-            {"arguments": arguments, "program": program}}}
+                                 {"arguments": arguments, "program": program}}}
         url = self.configUrl + "/actions/" + name
         res = self._push_config(url, config)
         if res.status_code != 200 and res.status_code != 201:
             raise Exception("Failed to add action." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
 
     def get_event_type(self, name):
         url = self.configUrl + "/event_types/" + name
@@ -729,7 +730,7 @@ class Vtm(Vadc):
             return None
         elif res.status_code != 200:
             raise Exception("Failed to get event." +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " Result: {}, {}".format(res.status_code, res.text))
         return res.json()
 
     def add_event_type_action(self, event, action):
@@ -744,5 +745,5 @@ class Vtm(Vadc):
         res = self._push_config(url, config)
         if res.status_code != 200:
             raise Exception("Failed to Set Action: {}".format(action) +
-                " for Event: {}.".format(event) +
-                " Result: {}, {}".format(res.status_code, res.text))
+                            " for Event: {}.".format(event) +
+                            " Result: {}, {}".format(res.status_code, res.text))

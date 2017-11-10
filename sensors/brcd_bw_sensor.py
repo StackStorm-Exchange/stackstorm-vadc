@@ -1,14 +1,13 @@
+import json
 from st2reactor.sensor.base import PollingSensor
 from lib.vadc import Bsd
-
-import json
 
 
 class brcdBwSensor(PollingSensor):
 
     def __init__(self, sensor_service, config=None, poll_interval=5):
         super(brcdBwSensor, self).__init__(sensor_service=sensor_service, config=config,
-            poll_interval=poll_interval)
+                                           poll_interval=poll_interval)
         self._logger = self.sensor_service.get_logger(name=self.__class__.__name__)
         self._stop = False
         self._bw_tracker = None
@@ -80,14 +79,14 @@ class brcdBwSensor(PollingSensor):
                 bw_tracker.pop(instance)
 
     def _issue_update(self, instance, tracked, instData, bw_tracker, bandwidth):
-            average = sum(bw_tracker[instance]["tracking"]) / len(bw_tracker[instance]["tracking"])
-            assign = average if tracked < average else tracked
-            assign = int(assign + self._headroom)
-            if assign != instData["assigned"]:
-                bw_tracker[instance]["assigned"] = assign
-                payload = {"action": "update", "instance": instance, "tag": instData["tag"],
-                    "bandwidth": assign, "current": instData["current"], "average": average}
-                self.sensor_service.dispatch(trigger="vadc.bsd_bandwidth_event", payload=payload)
+        average = sum(bw_tracker[instance]["tracking"]) / len(bw_tracker[instance]["tracking"])
+        assign = average if tracked < average else tracked
+        assign = int(assign + self._headroom)
+        if assign != instData["assigned"]:
+            bw_tracker[instance]["assigned"] = assign
+            payload = {"action": "update", "instance": instance, "tag": instData["tag"],
+                       "bandwidth": assign, "current": instData["current"], "average": average}
+            self.sensor_service.dispatch(trigger="vadc.bsd_bandwidth_event", payload=payload)
 
     def _monitor_bandwidth(self, bandwidth):
         for instance in bandwidth.keys():
@@ -95,7 +94,7 @@ class brcdBwSensor(PollingSensor):
             tag = instData["tag"]
             if instData["assigned"] - instData["current"] - self._warn <= 0:
                 payload = {"action": "alert", "instance": instance, "tag": tag,
-                    "bandwidth": instData["assigned"], "current": instData["current"]}
+                           "bandwidth": instData["assigned"], "current": instData["current"]}
                 self.sensor_service.dispatch(trigger="vadc.bsd_bandwidth_event", payload=payload)
 
     def _get_bw_tracker(self):
@@ -111,8 +110,8 @@ class brcdBwSensor(PollingSensor):
         self._bw_tracker = bw_tracker
 
         if hasattr(self._sensor_service, 'set_value'):
-            self._sensor_service.set_value(name='bw_tracker', value=json.dumps(bw_tracker,
-                encoding="utf-8"))
+            self._sensor_service.set_value(name='bw_tracker',
+                                           value=json.dumps(bw_tracker, encoding="utf-8"))
 
     def cleanup(self):
         # This is called when the st2 system goes down. You can perform cleanup operations like
