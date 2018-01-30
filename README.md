@@ -1,6 +1,6 @@
 # StackStorm vADC Pack
 
-This pack is designed to manage vTMs via a Brocade Services Director. 
+This pack is designed to manage vTMs via a Pulse Secure Services Director. 
 
 You can also manage individual vTMs directly, if you don't use Services
 Director, but you will need to set brcd\_sd\_proxy to false and supply
@@ -49,7 +49,7 @@ Dynamic user values can be set with (for example):
 ```
 
 ## Sensors
-### Brocade SD Status Sensor
+### Pulse Secure SD Status Sensor
 
 This pack includes a sensor to monitor errors reported by the Services
 Director.
@@ -88,7 +88,7 @@ Enable rule with:
 st2 rule enable vadc.vtm_fail_maintenance
 ```
 
-### Brocade Bandwidth Sensor
+### Pulse Secure Bandwidth Sensor
 
 This sensor checks the current throughput of the vTMs registered in your
 Services Director, and can alert you when they get close to their assigned
