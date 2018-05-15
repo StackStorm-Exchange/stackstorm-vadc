@@ -50,7 +50,7 @@ class Vadc(object):
         try:
             self._init_http()
             response = self.client.get(url, verify=False, headers=headers, params=params)
-        except:
+        except Exception:
             self.logger.error("Error: Unable to connect to API")
             raise Exception("Error: Unable to connect to API")
         self._debug("Status: {}".format(response.status_code))

@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.3.1
+
+- Minor linting fix
+
 # 0.3.0
 
 - vtm_add_pool now only sets nodes, unless you provide the optional params
