@@ -45,5 +45,6 @@ def main():
     res = requests.post(apiHook, headers=headers, data=json.dumps(payload), verify=False)
     print "(St2 Response: {}: {}".format(res.status_code, res.text)
 
+
 if __name__ == "__main__":
     main()

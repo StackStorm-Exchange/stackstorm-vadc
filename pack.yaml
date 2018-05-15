@@ -8,6 +8,6 @@ keywords:
   - vtm
   - bsd
   - loadbalancer
-version: 0.2.2
+version: 0.3.1
 author : Mark Boddington
 email : mboddington@pulsesecure.net
