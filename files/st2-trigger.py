@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 
 import requests
 import sys
@@ -39,11 +40,11 @@ def main():
     payload["trigger"] = trigger
     payload["message"] = message
 
-    print "St2 Payload: {}".format(payload)
+    print("St2 Payload: {}".format(payload))
 
     headers = {"St2-Api-Key": apiKey, "Content-Type": "application/json"}
     res = requests.post(apiHook, headers=headers, data=json.dumps(payload), verify=False)
-    print "(St2 Response: {}: {}".format(res.status_code, res.text)
+    print("(St2 Response: {}: {}".format(res.status_code, res.text))
 
 
 if __name__ == "__main__":
