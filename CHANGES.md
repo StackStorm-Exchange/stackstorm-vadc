@@ -1,5 +1,10 @@
 # Change Log
 
+# 0.3.2
+
+- Python 3 fixups
+- Add explicit support for Python 2 and 3
+
 # 0.3.1
 
 - Minor linting fix
