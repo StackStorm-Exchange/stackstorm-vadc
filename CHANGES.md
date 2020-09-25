@@ -1,5 +1,10 @@
 # Change Log
 
+# 0.4.0
+
+- Converted `vadc.deploy_workflow` workflow to Orquesta
+  Contributed by Nick Maludy (Encore Technologies)
+  
 # 0.3.2
 
 - Python 3 fixups
