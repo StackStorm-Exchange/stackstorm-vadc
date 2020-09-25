@@ -1,60 +1,81 @@
 ---
-  version: '2.0'
-  name: vadc.deploy_workflow
+version: '1.0'
+input:
+  - vtm
+  - service
+  - nodes
+  - vtms
+  - addresses
 
-  workflows:
-    main:
-      input:
-        - vtm
-        - service
-        - nodes
-        - vtms
-        - addresses
-      tasks:
-        addpool:
-          action: "vadc.vtm_add_pool"
-          input:
-            vtm: "<% $.vtm %>"
-            name: "<% $.service %>_pool"
-            nodes: "<% $.nodes %>"
-          on-success: 
-            - addtip
-          on-failure: 
-            - bitch
-        addtip:
-          action: "vadc.vtm_add_tip"
-          input:
-            vtm: "<% $.vtm %>"
-            name: "<% $.service %>_tip"
-            vtms: "<% $.vtms %>"
-            addresses: "<% $.addresses %>"
-          on-success: addvserver
-          on-failure: delpool
-        addvserver:
-          action: "vadc.vtm_add_vserver"
-          input:
-            vtm: "<% $.vtm %>"
-            name: "<% $.service %>_tip"
-            tip: "<% $.service %>_tip"
-            pool: "<% $.service %>_pool"
-          on-failure: "deltip"
-        deltip:
-          action: "vadc.vtm_del_tip"
-          input:
-            vtm: "<% $.vtm %>"
-            name: "<% $.service %>_tip"
-          on-failure: "delpool"
-          on-success: "delpool"
-        delpool:
-          action: "vadc.vtm_del_pool"
-          input:
-            vtm: "<% $.vtm %>"
-            name: "<% $.service %>_pool"
-          on-failure: "bitch"
-          on-success: "bitch"
-        bitch:
-          action: "core.local"
-          input:
-            cmd: "echo It has all gone wrong Stanley!!"
+tasks:
+  addpool:
+    action: vadc.vtm_add_pool
+    input:
+      vtm: "{{ ctx().vtm }}"
+      name: "{{ ctx().service }}_pool"
+      nodes: "{{ ctx().nodes }}"
+    next:
+      - when: '{{ succeeded() }}'
+        do:
+          - addtip
+      - when: '{{ failed() }}'
+        do:
+          - bitch
 
+  addtip:
+    action: vadc.vtm_add_tip
+    input:
+      vtm: "{{ ctx().vtm }}"
+      name: "{{ ctx().service }}_tip"
+      vtms: "{{ ctx().vtms }}"
+      addresses: "{{ ctx().addresses }}"
+    next:
+      - when: '{{ succeeded() }}'
+        do:
+          - addvserver
+      - when: '{{ failed() }}'
+        do:
+          - delpool
 
+  addvserver:
+    action: vadc.vtm_add_vserver
+    input:
+      vtm: "{{ ctx().vtm }}"
+      name: "{{ ctx().service }}_tip"
+      tip: "{{ ctx().service }}_tip"
+      pool: "{{ ctx().service }}_pool"
+    next:
+      - when: '{{ failed() }}'
+        do:
+          - deltip
+
+  deltip:
+    action: vadc.vtm_del_tip
+    input:
+      vtm: "{{ ctx().vtm }}"
+      name: "{{ ctx().service }}_tip"
+    next:
+      - when: '{{ succeeded() }}'
+        do:
+          - delpool
+      - when: '{{ failed() }}'
+        do:
+          - delpool
+
+  delpool:
+    action: vadc.vtm_del_pool
+    input:
+      vtm: "{{ ctx().vtm }}"
+      name: "{{ ctx().service }}_pool"
+    next:
+      - when: '{{ succeeded() }}'
+        do:
+          - bitch
+      - when: '{{ failed() }}'
+        do:
+          - bitch
+
+  bitch:
+    action: core.local
+    input:
+      cmd: echo It has all gone wrong Stanley!!
