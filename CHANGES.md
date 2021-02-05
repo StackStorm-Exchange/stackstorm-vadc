@@ -1,5 +1,9 @@
 # Change Log
 
+# 1.0.0
+
+* Drop Python 2.7 support
+
 # 0.4.0
 
 - Converted `vadc.deploy_workflow` workflow to Orquesta

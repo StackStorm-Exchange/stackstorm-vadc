@@ -8,9 +8,8 @@ keywords:
   - vtm
   - bsd
   - loadbalancer
-version: 0.4.0
+version: 1.0.0
 author : Mark Boddington
 email : mboddington@pulsesecure.net
 python_versions:
-  - "2"
   - "3"
