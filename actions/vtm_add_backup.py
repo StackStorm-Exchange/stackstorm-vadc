@@ -20,5 +20,5 @@ class VtmAddBackup(Action):
             sys.stderr.write("File does not exist: {}\n".format(tarball))
             return (False, None)
 
-        result = vtm.upload_backup(backup)
+        result = vtm.upload_backup(backup)  # pylint: disable=assignment-from-no-return
         return (True, result)
